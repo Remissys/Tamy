@@ -9,14 +9,6 @@ export default function MainHeader() {
     })
 
     const handleScroll = () => {
-        // if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-        //     document.getElementById('nav').classList.add("js-reduced-nav")
-        //     document.getElementById('logo').classList.add("js-reduced-nav-logo")
-        // } 
-        // else {
-        //     document.getElementById('nav').classList.remove("js-reduced-nav")
-        //     document.getElementById('logo').classList.remove("js-reduced-nav-logo")
-        // }
         let nav = document.getElementById('nav');
         let logo = document.getElementById('logo');
 

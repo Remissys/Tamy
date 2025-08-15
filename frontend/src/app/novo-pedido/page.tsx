@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
+import { request } from "@/api/client"
 
 // Schema
 const itemSchema = z.object({
@@ -40,8 +41,22 @@ export default function Page(): JSX.Element {
     const { control, handleSubmit, register, formState: { errors } } = form
     const { fields, prepend, remove } = useFieldArray({ control, name: "items" })
 
-    const onSubmit = (data: FormData) => {
-        console.log("Pedido criado:", data)
+    const onSubmit = async (data: FormData) => {
+        const requestConfig = {
+            url: `order`,
+            method: 'POST',
+            body: {
+                items: data.items
+            }
+        }
+
+        const requestResponse = await request(requestConfig)
+
+        if(requestResponse.success) {
+            // Lógica para lidar com o login bem-sucedido
+        } else {
+            alert('Erro ao fazer login')
+        }
     }
 
     return (
@@ -49,70 +64,70 @@ export default function Page(): JSX.Element {
             <CardHeader>
                 <CardTitle>Criar Pedido</CardTitle>
             </CardHeader>
-            <CardContent>
-                <Button
-                    type="button"
-                    variant="outline"
-                    // onClick={() => append({id: uuidv4(),name: "",price: "",category: ""})}
-                    onClick={() => prepend({id: '1', name: "", price: "", quantity: ""})}
-                >Adicionar Item</Button>
-                {fields.map((field, index) => (
-                    <Card key={field.id} className="p-4 border border-gray-200">
-                        <div className="space-y-2">
-                            <div>
-                                <Label>Nome</Label>
-                                <Input
-                                    {...register(`items.${index}.name`)}
-                                    placeholder="Digite o nome"
-                                />
-                                {errors.items?.[index]?.name && (
-                                    <p className="text-red-500 text-sm">
-                                    {errors.items[index]?.name?.message}
-                                    </p>
-                                )}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <CardContent>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => prepend({id: '1', name: "", price: "", quantity: ""})}
+                    >Adicionar Item</Button>
+                    {fields.map((field, index) => (
+                        <Card key={field.id} className="p-4 border border-gray-200">
+                            <div className="space-y-2">
+                                <div>
+                                    <Label>Nome</Label>
+                                    <Input
+                                        {...register(`items.${index}.name`)}
+                                        placeholder="Digite o nome"
+                                    />
+                                    {errors.items?.[index]?.name && (
+                                        <p className="text-red-500 text-sm">
+                                        {errors.items[index]?.name?.message}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <Label>Preço</Label>
+                                    <p>R$ 50,00</p>
+                                </div>
+                                <div>
+                                    <Label>Quantidade</Label>
+                                    <Input
+                                        type="number"
+                                        {...register(`items.${index}.quantity`)}
+                                        placeholder="1"
+                                        min={1}
+                                    />
+                                    {errors.items?.[index]?.quantity && (
+                                        <p className="text-red-500 text-sm">
+                                        {errors.items[index]?.quantity?.message}
+                                        </p>
+                                    )}
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => remove(index)}
+                                >Excluir</Button>
                             </div>
-                            <div>
-                                <Label>Preço</Label>
-                                <p>R$ 50,00</p>
-                            </div>
-                            <div>
-                                <Label>Quantidade</Label>
-                                <Input
-                                    type="number"
-                                    {...register(`items.${index}.quantity`)}
-                                    placeholder="1"
-                                    min={1}
-                                />
-                                {errors.items?.[index]?.quantity && (
-                                    <p className="text-red-500 text-sm">
-                                    {errors.items[index]?.quantity?.message}
-                                    </p>
-                                )}
-                            </div>
-                            <Button
-                                type="button"
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => remove(index)}
-                            >Excluir</Button>
-                        </div>
-                    </Card>
-                ))}
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <p>Total:</p>
-                <p>R$ 50,00</p>
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {console.log("cancelar")}}
-                >Cancelar</Button>
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {console.log("criar")}}
-                >Criar</Button>
-            </CardFooter>
+                        </Card>
+                    ))}
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                    <p>Total:</p>
+                    <p>R$ 50,00</p>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {console.log("cancelar")}}
+                    >Cancelar</Button>
+                    <Button
+                        type="submit"
+                        variant="outline"
+                    >Criar</Button>
+                </CardFooter>
+            </form>
         </Card>
     )
 }

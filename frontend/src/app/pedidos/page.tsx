@@ -36,7 +36,7 @@ export default function Page(): JSX.Element {
             <CardContent>
                 {pedidos.map((value, index) => {
                     return(
-                        <Card className="flex justify-between m-2 p-3 items-center">
+                        <Card key={value.id} className="flex justify-between m-2 p-3 items-center">
                             <Label>Pedido</Label>
                             <p>{value.id}</p>
                             <Label>Preço</Label>
@@ -49,10 +49,6 @@ export default function Page(): JSX.Element {
                             <Button
                                 onClick={() => {console.log('pedido concluido')}}
                             >Concluir</Button>
-                            {/*
-                                Adicionar botão de detalhes (setinha para abrir e fechar)
-                                    -> items do pedido | preço individual | quantidade
-                            */}
                         </Card>
                     )
                 })}
